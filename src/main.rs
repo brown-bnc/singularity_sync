@@ -191,17 +191,28 @@ fn sync_docker_image(image: &str, directory: &str, options: &Options) -> Result<
         tags_to_sync.as_slice()
     };
 
-    let force = if options.force { "-f" } else { "" };
     for tag in tags_to_sync {
         let sif_path = format!("{}/{}/{}-{}.sif", directory, repository, image, tag);
         let docker_uri = format!("docker://{}/{}:{}", repository, image, tag);
-        let singularity_cmd = format!("singularity build {} {} {}", force, sif_path, docker_uri);
-        let sbatch_cmd = format!("{}", singularity_cmd)
 
-        println!("{:#?}", singularity_cmd);
+        if options.dry_run {
+            let force = if options.force { "-f" } else { "" };
+            let sbatch_cmd = format!("singularity build {} {} {}", force, sif_path, docker_uri);
+            println!("{}", sbatch_cmd);
+        } else {
+            let mut command = Command::new("singularity");
+
+            if options.force {
+                command.arg("-f");
+            }
+
+            command
+                .arg(sif_path)
+                .arg(docker_uri)
+                .spawn()
+                .expect("singularity build failed to start");
+        }
     }
-
-    println!("{}/{}: {:?}", repository, image, tags_to_sync);
 
     Ok(())
 }
