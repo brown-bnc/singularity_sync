@@ -10,10 +10,8 @@ use std::time::SystemTime;
 
 #[derive(Debug)]
 struct Options {
-    skip_errors: bool,
     dry_run: bool,
     force: bool,
-    include_latest: bool,
     first_sync: usize,
 }
 
@@ -196,21 +194,22 @@ fn sync_docker_image(image: &str, directory: &str, options: &Options) -> Result<
         let docker_uri = format!("docker://{}/{}:{}", repository, image, tag);
 
         if options.dry_run {
-            let force = if options.force { "-f" } else { "" };
+            let force = if options.force { "-F" } else { "" };
             let sbatch_cmd = format!("singularity build {} {} {}", force, sif_path, docker_uri);
             println!("{}", sbatch_cmd);
         } else {
             let mut command = Command::new("singularity");
 
+            command.arg("build");
+
             if options.force {
-                command.arg("-f");
+                command.arg("-F");
             }
 
             command
                 .arg(sif_path)
                 .arg(docker_uri)
-                .spawn()
-                .expect("singularity build failed to start");
+                .status()?;
         }
     }
 
@@ -243,12 +242,6 @@ fn main() -> Result<()> {
                 .takes_value(true),
         )
         .arg(
-            Arg::with_name("skip_errors")
-                .short("s")
-                .long("skip-errors")
-                .help("Continue processing on error"),
-        )
-        .arg(
             Arg::with_name("dry_run")
                 .short("d")
                 .long("dry-run")
@@ -275,10 +268,8 @@ fn main() -> Result<()> {
 
     let directory = String::from(matches.value_of("DIR").unwrap());
     let options = Options {
-        skip_errors: matches.is_present("skip_errors"),
         dry_run: matches.is_present("dry_run"),
         force: matches.is_present("force"),
-        include_latest: matches.is_present("include_latest"),
         first_sync: matches.value_of("first_sync").unwrap().parse()?,
     };
     sync_manifest(&directory, &manifest, &options)?;
