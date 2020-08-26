@@ -206,10 +206,7 @@ fn sync_docker_image(image: &str, directory: &str, options: &Options) -> Result<
                 command.arg("-F");
             }
 
-            command
-                .arg(sif_path)
-                .arg(docker_uri)
-                .status()?;
+            command.arg(sif_path).arg(docker_uri).status()?;
         }
     }
 
