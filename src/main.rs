@@ -134,6 +134,11 @@ fn lastest_sync_timestamp(dir: &Path, image: &str) -> Result<DateTime<Utc>> {
     Ok(DateTime::from(latest_sync))
 }
 
+fn is_banned_image(tag_name: &str, banned_tags: &[&str]) -> Result<bool> {
+    let chk = banned_tags.iter().any(|ban| tag_name.contains(ban));
+    Ok(chk)
+}
+
 fn tags_after_timestamp(
     repository: &str,
     image: &str,
@@ -143,6 +148,9 @@ fn tags_after_timestamp(
         "https://registry.hub.docker.com/v2/repositories/{}/{}/tags",
         repository, image
     );
+
+    let banned_tags = vec!["latest", "dev", "rc", "test"];
+
     let mut tags: Vec<String> = Vec::new();
 
     loop {
@@ -151,7 +159,7 @@ fn tags_after_timestamp(
         let response: TagResponse = serde_json::from_str(&response)?;
 
         response.results.iter().for_each(|tag| {
-            if tag.last_updated > latest_sync {
+            if tag.last_updated > latest_sync && !is_banned_image(&tag.name, &banned_tags).unwrap() {
                 tags.push(tag.name.clone());
             }
         });
