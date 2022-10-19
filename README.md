@@ -59,7 +59,7 @@ cargo clippy
 
 ## Future work
 
-* Parallelize builds using [Slurm](https://slurm.schedmd.com/)
+* ~~Parallelize builds using [Slurm](https://slurm.schedmd.com/)~~
 * Support single Docker images without a manifest
 * Support Docker registries other than [Docker Hub](https://hub.docker.com)
 * Support native Singularity builds
