@@ -149,7 +149,7 @@ fn tags_after_timestamp(
         repository, image
     );
 
-    let banned_tags = vec!["latest", "dev", "rc", "test"];
+    let banned_tags = vec!["latest", "dev", "rc", "test", "unstable"];
 
     let mut tags: Vec<String> = Vec::new();
 
