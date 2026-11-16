@@ -28,9 +28,7 @@ struct Tag {
 
 #[derive(Deserialize, Debug)]
 struct TagResponse {
-    count: u32,
     next: Option<String>,
-    previous: Option<String>,
     results: Vec<Tag>,
 }
 
