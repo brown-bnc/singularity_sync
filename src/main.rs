@@ -157,7 +157,8 @@ fn tags_after_timestamp(
         let response: TagResponse = serde_json::from_str(&response)?;
 
         response.results.iter().for_each(|tag| {
-            if tag.last_updated > latest_sync && !is_banned_image(&tag.name, &banned_tags).unwrap() {
+            if tag.last_updated > latest_sync && !is_banned_image(&tag.name, &banned_tags).unwrap()
+            {
                 tags.push(tag.name.clone());
             }
         });
