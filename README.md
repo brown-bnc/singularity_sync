@@ -1,9 +1,8 @@
 # Singularity Sync (Rust Edition)
 
-The Singularity Sync utility rebuilds Docker containers as Singularity containers. It does so by parsing a manifest file containing a list of Docker images. Below is an example of a manifest file. 
+The Singularity Sync utility rebuilds Docker containers as Singularity containers. It does so by parsing a manifest file containing a list of Docker images. Below is an example of a manifest file.
 
-```
----
+```yaml
 docker:
 - bids/validator
 - brownbnc/xnat-tools
@@ -19,13 +18,13 @@ To install Singularity Sync [install rust](https://www.rust-lang.org/tools/insta
 
 Build using cargo:
 
-```
+```shell
 cargo build --release
 ```
 
 Run the resulting executable:
 
-```
+```shell
 ./target/release/singularity_sync
 ```
 
@@ -35,25 +34,25 @@ Development follows a standard rust workflow. Most everything is done through ca
 
 Build development version with cargo:
 
-```
+```shell
 cargo build
 ```
 
 Run development version:
 
-```
+```shell
 cargo run -- -h
 ```
 
 Format with cargo:
 
-```
+```shell
 cargo fmt
 ```
 
 Lint with cargo:
 
-```
+```shell
 cargo clippy
 ```
 
